@@ -1,8 +1,8 @@
 require "spec_helper"
 
-describe SugoiPrettyPrintLog do
+describe SugoiPrettyLog do
   it "has a version number" do
-    expect(SugoiPrettyPrintLog::VERSION).not_to be nil
+    expect(SugoiPrettyLog::VERSION).not_to be nil
   end
 
   let(:log1) do
@@ -18,6 +18,8 @@ LOG
   end
   describe '#print' do
     it 'be success' do
+      print_log = SugoiPrettyLog.parse(log2, json: [:Parameters])
+      print_log.print
     end
   end
 end
