@@ -20,6 +20,18 @@ module SugoiPrettyLog
       end
 
       if @hashs_option
+        # SugoiPrettyLog.parse(get_log_with_params, hash: { message: :Parameters }, user_agent: :ua)
+        @hashs_option.each do |key, options_key_value|
+          json[key.to_s].each do |in_key|
+            options_key_value.each do |target_key, target_value|
+              if target_value.is_a?(Regexp)
+                (in_key =~ target_value) || next
+                json[target_key] = $1
+              end
+            end
+          end
+        end
+
         # real['messages'][2] =~ /Parameters: (.*)/
       end
       json
