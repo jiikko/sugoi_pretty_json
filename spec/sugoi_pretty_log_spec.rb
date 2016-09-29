@@ -27,11 +27,9 @@ describe SugoiPrettyLog do
     context 'when has params' do
       it 'be success' do
         real = SugoiPrettyLog.parse(get_log_with_params, user_agent: :ua) do |pretty_log|
-          pretty_log.parse_key('messages') do |p|
-            p.array do |l|
-              l.name :params
-              l.regexp /Parameters: (.*)/
-            end
+          pretty_log.to_hash_by(key: 'messages') do |p|
+            l.name :params
+            l.regexp /Parameters: (.*)/
           end
         end
         ap real
