@@ -73,7 +73,7 @@ module SugoiPrettyLog
         case object
         when Array
           object.each do |item|
-            (parsed_member =~ item) || next
+            (parsed_member.source =~ item) || next
             json[parsed_member.name] = HashPaser.parse($1)
           end
         when String
