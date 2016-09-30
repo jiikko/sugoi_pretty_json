@@ -77,7 +77,8 @@ module SugoiPrettyLog
             json[parsed_member.name] = HashPaser.parse($1)
           end
         when String
-          # TODO
+          (parsed_member.source =~ object) || next
+          json[parsed_member.name] = HashPaser.parse($1)
         end
       end
     end
