@@ -26,14 +26,14 @@ describe SugoiPrettyLog do
 
     context 'when has params' do
       it 'be success' do
-        real = SugoiPrettyLog.parse(get_log_with_params, user_agent: :ua) do |pretty_log|
-          pretty_log.hash_serialize(key: 'messages') do |s|
-            s.serialized_name :params
-            s.regexp          /Parameters: (.*)/
+        actual = SugoiPrettyLog.parse(get_log_with_params, user_agent: :ua) do |pretty_log|
+          pretty_log.parse_hash(json_key: 'messages') do |p|
+            p.name   = 'params'
+            p.source = /Parameters: (.*)/
           end
         end
-        ap real
-        expect(real['user_agent']).to eq "Chrome Mobile 52.0.2743.98"
+        ap actual
+        expect(actual['user_agent']).to eq "Chrome Mobile 52.0.2743.98"
       end
     end
   end

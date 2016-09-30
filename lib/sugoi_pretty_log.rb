@@ -4,36 +4,35 @@ require "user_agent_parser"
 require "json"
 
 module SugoiPrettyLog
+  class ParsedMember
+    attr_accessor :name, :source
+    attr_reader :json_key
+
+    def initialize(json_key)
+      @json_key = json_key.to_s
+    end
+  end
+
+  class HashPaser
+    def self.parse(string)
+      # TODO more safe
+      eval string
+    end
+  end
+
   class Parser
     def initialize(log, options)
       @log = log.strip
       @options = options
       @user_agent_key_name = options[:user_agent]
       @hashs_option = options[:hash]
+      @parsed_members = []
     end
 
     def parse
       json = build_json
-      if @user_agent_key_name
-        json['user_agent'] =
-          UserAgentParser.parse(json[@user_agent_key_name.to_s]).to_s
-      end
-
-      if @hashs_option
-        # SugoiPrettyLog.parse(get_log_with_params, hash: { message: :Parameters }, user_agent: :ua)
-        @hashs_option.each do |key, options_key_value|
-          json[key.to_s].each do |in_key|
-            options_key_value.each do |target_key, target_value|
-              if target_value.is_a?(Regexp)
-                (in_key =~ target_value) || next
-                json[target_key] = $1
-              end
-            end
-          end
-        end
-
-        # real['messages'][2] =~ /Parameters: (.*)/
-      end
+      parse_user_agent!(json)
+      parse_hash!(json)
       json
     end
 
@@ -48,15 +47,47 @@ module SugoiPrettyLog
       #   JSON.parse(eval(@log).to_json)
     end
 
+    def parse_hash(json_key: )
+      parsed_member = ParsedMember.new(json_key)
+      @parsed_members << parsed_member
+      yield(parsed_member)
+    end
+
     private
 
-    # TODO this is injected
+    # TODO security hole
     def json?
       /\A{.*}\z/
+    end
+
+    def parse_user_agent!(json)
+      if @user_agent_key_name
+        json['user_agent'] =
+          UserAgentParser.parse(json[@user_agent_key_name.to_s]).to_s
+      end
+    end
+
+    def parse_hash!(json)
+      @parsed_members.each do |parsed_member|
+        object = json[parsed_member.json_key]
+        case object
+        when Array
+          object.each do |item|
+            (parsed_member =~ item) || next
+            json[parsed_member.name] = HashPaser.parse($1)
+          end
+        when String
+          # TODO
+        end
+      end
     end
   end
 
   def self.parse(log, options = {})
-    Parser.new(log, options).parse
+    parser = Parser.new(log, options)
+    if block_given?
+      yield(parser)
+    end
+    parser.parse
   end
 end
