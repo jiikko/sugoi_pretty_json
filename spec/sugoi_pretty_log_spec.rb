@@ -67,6 +67,19 @@ describe SugoiPrettyLog do
           expect(actual['user_agent']).to eq "Chrome Mobile 52.0.2743.98"
           expect(actual['params']).to be_a Hash
           expect(actual.keys.size).to eq 2
+          actual = SugoiPrettyLog.parse(get_log_with_params, only: ['user_agent', 'params']) do |pretty_log|
+            pretty_log.parse_user_agent(json_key: 'ua') do |p|
+              p.name   = 'user_agent'
+            end
+            pretty_log.parse_hash(json_key: 'messages') do |p|
+              p.name   = 'params'
+              p.source = /Parameters: (.*)/
+            end
+          end
+          ap actual
+          expect(actual['user_agent']).to eq "Chrome Mobile 52.0.2743.98"
+          expect(actual['params']).to be_a Hash
+          expect(actual.keys.size).to eq 2
         end
       end
     end
