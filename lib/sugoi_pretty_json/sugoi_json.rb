@@ -31,35 +31,11 @@ module SugoiPrettyJSON
     end
 
     def parse_string!(parsed_members)
-      parsed_members.each do |parsed_member|
-        object = @json[parsed_member.json_key]
-        case object
-        when Array
-          object.each do |item|
-            (parsed_member.source =~ item) || next
-            @json[parsed_member.name] = $1
-          end
-        when String
-          (parsed_member.source =~ object) || next
-          @json[parsed_member.name] = $1
-        end
-      end
+      parse(parsed_members, type: :string)
     end
 
     def parse_hash!(parsed_members)
-      parsed_members.each do |parsed_member|
-        object = @json[parsed_member.json_key]
-        case object
-        when Array
-          object.each do |item|
-            (parsed_member.source =~ item) || next
-            @json[parsed_member.name] = HashPaser.parse($1)
-          end
-        when String
-          (parsed_member.source =~ object) || next
-          @json[parsed_member.name] = HashPaser.parse($1)
-        end
-      end
+      parse(parsed_members, type: :hash)
     end
 
     def slice_only_option!(option_only)
@@ -73,6 +49,23 @@ module SugoiPrettyJSON
 
     def json?
       true
+    end
+
+    def parse(parsed_members, type: )
+      parsed_members.each do |parsed_member|
+        object = @json[parsed_member.json_key]
+        case object
+        when Array
+          object.each { |item| set_json(parsed_member, item, @json, type) }
+        when String
+          set_json(parsed_member, object, @json, type)
+        end
+      end
+    end
+
+    def set_json(parsed_member, object, json, type)
+      (parsed_member.source =~ object) || return
+      @json[parsed_member.name] = (type == :hash ? HashPaser.parse($1) : $1)
     end
   end
 end
