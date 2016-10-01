@@ -2,8 +2,8 @@ module SugoiPrettyJSON
   class HashPaser
     def self.parse(string)
       string.gsub!('=>', ':')
-      string.gsub!(/\r\n|\n/, '')
-      string.gsub!(/\\r\\n|\\n/, '')
+      string.gsub!(/\r|\n/, '')
+      string.gsub!(/\\r|\\n/, '')
       JSON.parse(string)
     end
   end
