@@ -42,6 +42,7 @@ describe SugoiPrettyJSON do
         ap actual
         expect(actual['user_agent']).to eq "Chrome Mobile 52.0.2743.98"
         expect(actual['params']).to be_a Hash
+        expect(actual['sid']).not_to be_nil
       end
     end
 
@@ -66,7 +67,7 @@ describe SugoiPrettyJSON do
           ap actual
           expect(actual['user_agent']).to eq "Chrome Mobile 52.0.2743.98"
           expect(actual['params']).to be_a Hash
-          expect(actual.keys.size).to eq 2
+          expect(actual.keys.size).to eq 12
           actual = SugoiPrettyJSON.parse(get_log_with_params, only: ['user_agent', 'params']) do |pretty_json|
             pretty_json.parse_user_agent(json_key: 'ua') do |p|
               p.name   = 'user_agent'

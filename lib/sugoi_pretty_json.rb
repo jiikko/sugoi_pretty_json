@@ -29,14 +29,14 @@ module SugoiPrettyJSON
         parse_user_agent(json_key: options[:user_agent])
       end
       @parsed_members = []
-      @option_only = options[:only] || []
+      @assigned_option_only = options[:only] || []
     end
 
     def parse
       json = SugoiJSON.new(@log)
       json.parse_user_agent!(@user_agent_member)
       json.parse_hash!(@parsed_members)
-      json.slice_only_option!(option_only)
+      json.slice_only_option!(build_option_only)
       json.to_hash
     end
 
@@ -55,9 +55,10 @@ module SugoiPrettyJSON
 
     private
 
-    def option_only
+    def build_option_only
+      return if @assigned_option_only.empty?
       only = []
-      only.concat(@option_only)
+      only.concat(@assigned_option_only)
       only << @user_agent_member.name if @user_agent_member
       @parsed_members.each { |member| only << member.name }
       only
