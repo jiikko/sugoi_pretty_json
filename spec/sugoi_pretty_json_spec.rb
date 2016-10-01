@@ -34,15 +34,25 @@ describe SugoiPrettyJSON do
       it 'be success' do
         actual = SugoiPrettyJSON.parse(get_log_with_params) do |pretty_json|
           pretty_json.parse_user_agent(json_key: 'ua')
+          pretty_json.parse_string(json_key: 'messages') do |p|
+            p.name   = 'IP Address'
+            p.source = /for (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) at/
+          end
+          pretty_json.parse_string(json_key: 'messages') do |p|
+            p.name   = 'Access Date'
+            p.source = /for \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} at ([^+]+) \+0900/
+          end
           pretty_json.parse_hash(json_key: 'messages') do |p|
-            p.name   = 'params'
+            p.name   = 'Parameters'
             p.source = /Parameters: (.*)/m
           end
         end
         ap actual
         expect(actual['user_agent']).to eq "Chrome Mobile 52.0.2743.98"
-        expect(actual['params']).to be_a Hash
+        expect(actual['Parameters']).to be_a Hash
         expect(actual['sid']).not_to be_nil
+        expect(actual['IP Address']).to eq '127.0.0.1'
+        expect(actual['Access Date']).to eq '2016-08-06 23:59:59'
       end
     end
 

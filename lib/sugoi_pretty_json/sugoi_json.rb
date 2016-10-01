@@ -30,6 +30,22 @@ module SugoiPrettyJSON
       end
     end
 
+    def parse_string!(parsed_members)
+      parsed_members.each do |parsed_member|
+        object = @json[parsed_member.json_key]
+        case object
+        when Array
+          object.each do |item|
+            (parsed_member.source =~ item) || next
+            @json[parsed_member.name] = $1
+          end
+        when String
+          (parsed_member.source =~ object) || next
+          @json[parsed_member.name] = $1
+        end
+      end
+    end
+
     def parse_hash!(parsed_members)
       parsed_members.each do |parsed_member|
         object = @json[parsed_member.json_key]
