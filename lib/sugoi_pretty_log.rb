@@ -21,6 +21,59 @@ module SugoiPrettyLog
     end
   end
 
+  class SugoiJSON
+    def initialize(log)
+      unless json?
+        raise(JSON::ParserError, 'not json')
+      end
+      @json = JSON.parse(log)
+      # 意味ある？
+      # rescue JSON::ParserError
+      #   puts '@@@@ done eval @@@@'
+      #   JSON.parse(eval(@log).to_json)
+    end
+
+    def to_hash
+      @json
+    end
+
+    def parse_user_agent!(user_agent_member)
+      if user_agent_member
+        @json[user_agent_member.name] =
+          UserAgentParser.parse(@json[user_agent_member.json_key]).to_s
+      end
+    end
+
+    def parse_hash!(parsed_members)
+      parsed_members.each do |parsed_member|
+        object = @json[parsed_member.json_key]
+        case object
+        when Array
+          object.each do |item|
+            (parsed_member.source =~ item) || next
+            @json[parsed_member.name] = HashPaser.parse($1)
+          end
+        when String
+          (parsed_member.source =~ object) || next
+          @json[parsed_member.name] = HashPaser.parse($1)
+        end
+      end
+    end
+
+    def slice_only_option!(option_only)
+      return unless option_only
+      @json.each do |key, value|
+        @json.delete_if { |key, value| !option_only.include?(key) }
+      end
+    end
+
+    private
+
+    def json?
+      true
+    end
+  end
+
   class Parser
     def initialize(log, options)
       @log = log.strip
@@ -28,26 +81,15 @@ module SugoiPrettyLog
         parse_user_agent(json_key: options[:user_agent])
       end
       @parsed_members = []
-      @only = options[:only]
+      @option_only = options[:only] || []
     end
 
     def parse
-      json = build_json
-      parse_user_agent!(json)
-      parse_hash!(json)
-      slice_only_option!(json)
-      json
-    end
-
-    def build_json
-      unless json?
-        raise(JSON::ParserError, 'not json')
-      end
-      JSON.parse(@log)
-      # 意味ある？
-      # rescue JSON::ParserError
-      #   puts '@@@@ done eval @@@@'
-      #   JSON.parse(eval(@log).to_json)
+      json = SugoiJSON.new(@log)
+      json.parse_user_agent!(@user_agent_member)
+      json.parse_hash!(@parsed_members)
+      json.slice_only_option!(option_only)
+      json.to_hash
     end
 
     def parse_hash(json_key: )
@@ -65,41 +107,12 @@ module SugoiPrettyLog
 
     private
 
-    def slice_only_option!(json)
-      return unless @only
-      @only << @user_agent_member.name if @user_agent_member
-      @parsed_members.each { |member| @only << member.name }
-      json.each do |key, value|
-        json.delete_if { |key, value| !@only.include?(key) }
-      end
-    end
-
-    # TODO security hole
-    def json?
-      /\A{.*}\z/
-    end
-
-    def parse_user_agent!(json)
-      if @user_agent_member
-        json[@user_agent_member.name] =
-          UserAgentParser.parse(json[@user_agent_member.json_key]).to_s
-      end
-    end
-
-    def parse_hash!(json)
-      @parsed_members.each do |parsed_member|
-        object = json[parsed_member.json_key]
-        case object
-        when Array
-          object.each do |item|
-            (parsed_member.source =~ item) || next
-            json[parsed_member.name] = HashPaser.parse($1)
-          end
-        when String
-          (parsed_member.source =~ object) || next
-          json[parsed_member.name] = HashPaser.parse($1)
-        end
-      end
+    def option_only
+      only = []
+      only.concat(@option_only)
+      only << @user_agent_member.name if @user_agent_member
+      @parsed_members.each { |member| only << member.name }
+      only
     end
   end
 
