@@ -1,4 +1,4 @@
-module SugoiPrettyLog
+module SugoiPrettyJSON
   class HashPaser
     def self.parse(string)
       string.gsub!('=>', ':')

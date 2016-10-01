@@ -1,8 +1,8 @@
 require "spec_helper"
 
-describe SugoiPrettyLog do
+describe SugoiPrettyJSON do
   it "has a version number" do
-    expect(SugoiPrettyLog::VERSION).not_to be nil
+    expect(SugoiPrettyJSON::VERSION).not_to be nil
   end
 
   let(:get_log) do
@@ -19,20 +19,20 @@ describe SugoiPrettyLog do
   describe '#parse' do
     context 'user_agentのparseをしない時' do
       it 'json_key user_agent がないこと' do
-        actual = SugoiPrettyLog.parse(get_log)
+        actual = SugoiPrettyJSON.parse(get_log)
         expect(actual['user_agent']).to eq nil
       end
     end
     context 'when has no params' do
       it 'be success' do
-        actual = SugoiPrettyLog.parse(get_log, user_agent: 'ua')
+        actual = SugoiPrettyJSON.parse(get_log, user_agent: 'ua')
         expect(actual['user_agent']).to eq "Chrome Mobile 51.0.2704.81"
       end
     end
 
     context 'when has params' do
       it 'be success' do
-        actual = SugoiPrettyLog.parse(get_log_with_params) do |pretty_log|
+        actual = SugoiPrettyJSON.parse(get_log_with_params) do |pretty_log|
           pretty_log.parse_user_agent(json_key: 'ua')
           pretty_log.parse_hash(json_key: 'messages') do |p|
             p.name   = 'params'
@@ -48,13 +48,13 @@ describe SugoiPrettyLog do
     describe 'options' do
       describe 'only' do
         it 'キーがsidだけになっていること' do
-          actual = SugoiPrettyLog.parse(get_log_with_params, only: ['sid'])
+          actual = SugoiPrettyJSON.parse(get_log_with_params, only: ['sid'])
           ap actual
           expect(actual.keys.size).to eq 1
           expect(actual['sid']).to be_a String
         end
         it 'キーが2つだけになっていること' do
-          actual = SugoiPrettyLog.parse(get_log_with_params, only: []) do |pretty_log|
+          actual = SugoiPrettyJSON.parse(get_log_with_params, only: []) do |pretty_log|
             pretty_log.parse_user_agent(json_key: 'ua') do |p|
               p.name   = 'user_agent'
             end
@@ -67,7 +67,7 @@ describe SugoiPrettyLog do
           expect(actual['user_agent']).to eq "Chrome Mobile 52.0.2743.98"
           expect(actual['params']).to be_a Hash
           expect(actual.keys.size).to eq 2
-          actual = SugoiPrettyLog.parse(get_log_with_params, only: ['user_agent', 'params']) do |pretty_log|
+          actual = SugoiPrettyJSON.parse(get_log_with_params, only: ['user_agent', 'params']) do |pretty_log|
             pretty_log.parse_user_agent(json_key: 'ua') do |p|
               p.name   = 'user_agent'
             end

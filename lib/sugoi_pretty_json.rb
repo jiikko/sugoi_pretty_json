@@ -1,10 +1,10 @@
-require "sugoi_pretty_log/version"
-require "sugoi_pretty_log/sugoi_json"
+require "sugoi_pretty_json/version"
+require "sugoi_pretty_json/sugoi_json"
 require "awesome_print"
 require "user_agent_parser"
 require "json"
 
-module SugoiPrettyLog
+module SugoiPrettyJSON
   def self.parse(log, options = {})
     parser = Parser.new(log, options)
     if block_given?
