@@ -17,18 +17,16 @@ describe SugoiPrettyLog do
   end
 
   describe '#parse' do
-    context 'no user_agent' do
-      it 'be success' do
+    context 'user_agentのparseをしない時' do
+      it 'json_key user_agent がないこと' do
         actual = SugoiPrettyLog.parse(get_log)
         expect(actual['user_agent']).to eq nil
-        ap actual
       end
     end
     context 'when has no params' do
       it 'be success' do
         actual = SugoiPrettyLog.parse(get_log, user_agent: 'ua')
         expect(actual['user_agent']).to eq "Chrome Mobile 51.0.2704.81"
-        ap actual
       end
     end
 
@@ -47,15 +45,15 @@ describe SugoiPrettyLog do
       end
     end
 
-    describe '#options' do
+    describe 'options' do
       describe 'only' do
-        it 'be success' do
+        it 'キーがsidだけになっていること' do
           actual = SugoiPrettyLog.parse(get_log_with_params, only: ['sid'])
           ap actual
           expect(actual.keys.size).to eq 1
           expect(actual['sid']).to be_a String
         end
-        it 'be success' do
+        it 'キーが2つだけになっていること' do
           actual = SugoiPrettyLog.parse(get_log_with_params, only: []) do |pretty_log|
             pretty_log.parse_user_agent(json_key: 'ua') do |p|
               p.name   = 'user_agent'
