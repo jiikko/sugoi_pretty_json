@@ -23,7 +23,9 @@ module SugoiPrettyLog
   class Parser
     def initialize(log, options)
       @log = log.strip
-      @user_agent_key_name = options[:user_agent]
+      if options[:user_agent]
+        parse_user_agent(json_key: options[:user_agent])
+      end
       @hashs_option = options[:hash]
       @parsed_members = []
     end
@@ -48,12 +50,15 @@ module SugoiPrettyLog
 
     def parse_hash(json_key: )
       parsed_member = ParsedMember.new(json_key)
-      @parsed_members << parsed_member
       yield(parsed_member)
+      @parsed_members << parsed_member
     end
 
     def parse_user_agent(json_key: )
-      @user_agent_key_name = json_key
+      parsed_member = ParsedMember.new(json_key)
+      yield(parsed_member) if block_given?
+      parsed_member.name ||= 'user_agent'
+      @user_agent_member = parsed_member
     end
 
     private
@@ -64,9 +69,9 @@ module SugoiPrettyLog
     end
 
     def parse_user_agent!(json)
-      if @user_agent_key_name
-        json['user_agent'] =
-          UserAgentParser.parse(json[@user_agent_key_name]).to_s
+      if @user_agent_member
+        json[@user_agent_member.name] =
+          UserAgentParser.parse(json[@user_agent_member.json_key]).to_s
       end
     end
 
