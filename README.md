@@ -29,7 +29,7 @@ hash = SugoiPrettyJSON.parse(log, only: ['user_agent', 'params']) do |pretty_jso
   end
   pretty_json.parse_hash(json_key: 'messages') do |p|
     p.name   = 'params'
-    p.source = /Parameters: (.*)/
+    p.source = /Parameters: (.*)/m
   end
 end
 

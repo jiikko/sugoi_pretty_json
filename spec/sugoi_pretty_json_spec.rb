@@ -36,7 +36,7 @@ describe SugoiPrettyJSON do
           pretty_json.parse_user_agent(json_key: 'ua')
           pretty_json.parse_hash(json_key: 'messages') do |p|
             p.name   = 'params'
-            p.source = /Parameters: (.*)/
+            p.source = /Parameters: (.*)/m
           end
         end
         ap actual
@@ -60,7 +60,7 @@ describe SugoiPrettyJSON do
             end
             pretty_json.parse_hash(json_key: 'messages') do |p|
               p.name   = 'params'
-              p.source = /Parameters: (.*)/
+              p.source = /Parameters: (.*)/m
             end
           end
           ap actual
@@ -73,7 +73,7 @@ describe SugoiPrettyJSON do
             end
             pretty_json.parse_hash(json_key: 'messages') do |p|
               p.name   = 'params'
-              p.source = /Parameters: (.*)/
+              p.source = /Parameters: (.*)/m
             end
           end
           ap actual

@@ -3,7 +3,6 @@ module SugoiPrettyJSON
     def self.parse(string)
       string.gsub!('=>', ':')
       string.gsub!(/\r|\n/, '')
-      string.gsub!(/\\r|\\n/, '')
       JSON.parse(string)
     end
   end
