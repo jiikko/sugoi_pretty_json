@@ -15,8 +15,8 @@ module SugoiPrettyLog
 
   class HashPaser
     def self.parse(string)
-      # TODO more safe
-      eval string
+      string.gsub!('=>', ':')
+      JSON.parse(string)
     end
   end
 
@@ -66,7 +66,7 @@ module SugoiPrettyLog
 
     def slice_only_option!(json)
       return unless @only
-      @only << @user_agent_member.name
+      @only << @user_agent_member.name if @user_agent_member
       @parsed_members.each { |member| @only << member.name }
       json.each do |key, value|
         json.delete_if { |key, value| !@only.include?(key) }
