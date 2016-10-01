@@ -34,30 +34,30 @@ hash = SugoiPrettyLog.parse(log, only: ['user_agent', 'params']) do |pretty_log|
 end
 
 ap hash
-{
-    "user_agent" => "Chrome Mobile 52.0.2743.98",
-        "params" => {
-        "q" => {
-            "0" => {
-                  "id" => "175",
-                "type" => "Facility",
-                 "css" => "c-btn__favorite p-faci__btn__favorite"
-            },
-            "1" => {
-                  "id" => "13452",
-                "type" => "Experience"
-            },
-            "2" => {
-                  "id" => "6387",
-                "type" => "Note",
-                 "css" => "c-btn__favorite"
-            },
-            "3" => {
-                  "id" => "5881",
-                "type" => "Note",
-                 "css" => "c-btn__favorite"
-            }
-        }
-    }
-}
+# {
+#     "user_agent" => "Chrome Mobile 52.0.2743.98",
+#         "params" => {
+#         "q" => {
+#             "0" => {
+#                   "id" => "175",
+#                 "type" => "Facility",
+#                  "css" => "c-btn__favorite p-faci__btn__favorite"
+#             },
+#             "1" => {
+#                   "id" => "13452",
+#                 "type" => "Experience"
+#             },
+#             "2" => {
+#                   "id" => "6387",
+#                 "type" => "Note",
+#                  "css" => "c-btn__favorite"
+#             },
+#             "3" => {
+#                   "id" => "5881",
+#                 "type" => "Note",
+#                  "css" => "c-btn__favorite"
+#             }
+#         }
+#     }
+# }
 ```
