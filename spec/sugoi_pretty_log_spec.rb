@@ -19,14 +19,15 @@ describe SugoiPrettyLog do
   describe '#print' do
     context 'when has no params' do
       it 'be success' do
-      real = SugoiPrettyLog.parse(get_log, user_agent: :ua)
+      real = SugoiPrettyLog.parse(get_log, user_agent: 'ua')
       expect(real['user_agent']).to eq "Chrome Mobile 51.0.2704.81"
       end
     end
 
     context 'when has params' do
       it 'be success' do
-        actual = SugoiPrettyLog.parse(get_log_with_params, user_agent: :ua) do |pretty_log|
+        actual = SugoiPrettyLog.parse(get_log_with_params) do |pretty_log|
+          pretty_log.parse_user_agent(json_key: 'ua')
           pretty_log.parse_hash(json_key: 'messages') do |p|
             p.name   = 'params'
             p.source = /Parameters: (.*)/
@@ -34,6 +35,7 @@ describe SugoiPrettyLog do
         end
         ap actual
         expect(actual['user_agent']).to eq "Chrome Mobile 52.0.2743.98"
+        expect(actual['params']).to be_a Hash
       end
     end
   end

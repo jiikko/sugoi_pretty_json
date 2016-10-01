@@ -1,5 +1,5 @@
 # SugoiPrettyLog
-This gem print pretty log.
+This gem print pretty log for JSON.
 
 ## Installation
 

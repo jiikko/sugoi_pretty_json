@@ -23,7 +23,6 @@ module SugoiPrettyLog
   class Parser
     def initialize(log, options)
       @log = log.strip
-      @options = options
       @user_agent_key_name = options[:user_agent]
       @hashs_option = options[:hash]
       @parsed_members = []
@@ -53,6 +52,10 @@ module SugoiPrettyLog
       yield(parsed_member)
     end
 
+    def parse_user_agent(json_key: )
+      @user_agent_key_name = json_key
+    end
+
     private
 
     # TODO security hole
@@ -63,7 +66,7 @@ module SugoiPrettyLog
     def parse_user_agent!(json)
       if @user_agent_key_name
         json['user_agent'] =
-          UserAgentParser.parse(json[@user_agent_key_name.to_s]).to_s
+          UserAgentParser.parse(json[@user_agent_key_name]).to_s
       end
     end
 
