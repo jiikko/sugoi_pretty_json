@@ -32,9 +32,9 @@ describe SugoiPrettyJSON do
 
     context 'when has params' do
       it 'be success' do
-        actual = SugoiPrettyJSON.parse(get_log_with_params) do |pretty_log|
-          pretty_log.parse_user_agent(json_key: 'ua')
-          pretty_log.parse_hash(json_key: 'messages') do |p|
+        actual = SugoiPrettyJSON.parse(get_log_with_params) do |pretty_json|
+          pretty_json.parse_user_agent(json_key: 'ua')
+          pretty_json.parse_hash(json_key: 'messages') do |p|
             p.name   = 'params'
             p.source = /Parameters: (.*)/
           end
@@ -54,11 +54,11 @@ describe SugoiPrettyJSON do
           expect(actual['sid']).to be_a String
         end
         it 'キーが2つだけになっていること' do
-          actual = SugoiPrettyJSON.parse(get_log_with_params, only: []) do |pretty_log|
-            pretty_log.parse_user_agent(json_key: 'ua') do |p|
+          actual = SugoiPrettyJSON.parse(get_log_with_params, only: []) do |pretty_json|
+            pretty_json.parse_user_agent(json_key: 'ua') do |p|
               p.name   = 'user_agent'
             end
-            pretty_log.parse_hash(json_key: 'messages') do |p|
+            pretty_json.parse_hash(json_key: 'messages') do |p|
               p.name   = 'params'
               p.source = /Parameters: (.*)/
             end
@@ -67,11 +67,11 @@ describe SugoiPrettyJSON do
           expect(actual['user_agent']).to eq "Chrome Mobile 52.0.2743.98"
           expect(actual['params']).to be_a Hash
           expect(actual.keys.size).to eq 2
-          actual = SugoiPrettyJSON.parse(get_log_with_params, only: ['user_agent', 'params']) do |pretty_log|
-            pretty_log.parse_user_agent(json_key: 'ua') do |p|
+          actual = SugoiPrettyJSON.parse(get_log_with_params, only: ['user_agent', 'params']) do |pretty_json|
+            pretty_json.parse_user_agent(json_key: 'ua') do |p|
               p.name   = 'user_agent'
             end
-            pretty_log.parse_hash(json_key: 'messages') do |p|
+            pretty_json.parse_hash(json_key: 'messages') do |p|
               p.name   = 'params'
               p.source = /Parameters: (.*)/
             end
