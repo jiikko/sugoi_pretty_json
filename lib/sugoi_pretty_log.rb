@@ -26,14 +26,15 @@ module SugoiPrettyLog
       if options[:user_agent]
         parse_user_agent(json_key: options[:user_agent])
       end
-      @hashs_option = options[:hash]
       @parsed_members = []
+      @only = options[:only]
     end
 
     def parse
       json = build_json
       parse_user_agent!(json)
       parse_hash!(json)
+      slice_only_option!(json)
       json
     end
 
@@ -62,6 +63,15 @@ module SugoiPrettyLog
     end
 
     private
+
+    def slice_only_option!(json)
+      return unless @only
+      @only << @user_agent_member.name
+      @parsed_members.each { |member| @only << member.name }
+      json.each do |key, value|
+        json.delete_if { |key, value| !@only.include?(key) }
+      end
+    end
 
     # TODO security hole
     def json?

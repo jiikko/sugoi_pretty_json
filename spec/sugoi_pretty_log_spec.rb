@@ -49,7 +49,7 @@ describe SugoiPrettyLog do
 
     describe '#options' do
       describe 'only' do
-        it '' do
+        it 'be success' do
           actual = SugoiPrettyLog.parse(get_log_with_params, only: []) do |pretty_log|
             pretty_log.parse_user_agent(json_key: 'ua') do |p|
               p.name   = 'user_agent'
@@ -62,6 +62,7 @@ describe SugoiPrettyLog do
           ap actual
           expect(actual['user_agent']).to eq "Chrome Mobile 52.0.2743.98"
           expect(actual['params']).to be_a Hash
+          expect(actual.keys.size).to eq 2
         end
       end
     end
