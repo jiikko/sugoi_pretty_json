@@ -23,9 +23,13 @@ require "sugoi_pretty_json"
 
 log = '{"sid":"5a4d","uid":"","dev":"s","messages":["Started GET \"/facilities/show_afte\" for 127.0.0.1 at 2016-08-06 23:59:59 +0900","Processing by FacilitiesController#show_after as */*","  Parameters: {\"q\"=>{\"0\"=>{\"id\"=>\"175\", \"type\"=>\"Facility\", \"css\"=>\"c-btn__favorite p-faci__btn__favorite\"}, \"1\"=>{\"id\"=>\"13452\", \"type\"=>\"Experience\"}, \"2\"=>{\"id\"=>\"6387\", \"type\"=>\"Note\", \"css\"=>\"c-btn__favorite\"}, \"3\"=>{\"id\"=>\"5881\", \"type\"=>\"Note\", \"css\"=>\"c-btn__favorite\"}}}","Completed 200 OK in 20ms (Views: 0.3ms | ActiveRecord: 3.7ms | Solr: 0.0ms)"],"level":"INFO","mt":"GET","pt":"/main","ip":"127.0.0.1","ua":"Mozilla/5.0 (Linux; Android 4.1.2; SO-04E Build/10.1.1.D.2.31) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36","rf":"http://localhost/175"}'
 
-hash = SugoiPrettyJSON.parse(log, only: ['user_agent', 'params']) do |pretty_json|
+hash = SugoiPrettyJSON.parse(log, only: ['IP Address', 'user_agent', 'params']) do |pretty_json|
   pretty_json.parse_user_agent(json_key: 'ua') do |p|
     p.name   = 'user_agent'
+  end
+  pretty_json.parse_string(json_key: 'messages') do |p|
+    p.name   = 'IP Address'
+    p.source = /for (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) at/
   end
   pretty_json.parse_hash(json_key: 'messages') do |p|
     p.name   = 'params'
@@ -58,6 +62,6 @@ ap hash
 #                  "css" => "c-btn__favorite"
 #             }
 #         }
-#     }
+#     },
+#     "IP Address" => "127.0.0.1"
 # }
-```
