@@ -25,8 +25,8 @@ module SugoiPrettyJSON
 
     def parse_user_agent!(user_agent_member)
       if user_agent_member
-        @json[user_agent_member.name] =
-          UserAgentParser.parse(@json[user_agent_member.json_key]).to_s
+        uap = UserAgentParser.parse(@json[user_agent_member.json_key])
+        @json[user_agent_member.name] = "#{uap.os} / #{uap}"
       end
     end
 

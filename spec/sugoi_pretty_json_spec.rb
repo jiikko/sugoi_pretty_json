@@ -26,7 +26,7 @@ describe SugoiPrettyJSON do
     context 'when has no params' do
       it 'be success' do
         actual = SugoiPrettyJSON.parse(get_log, user_agent: 'ua')
-        expect(actual['user_agent']).to eq "Chrome Mobile 51.0.2704.81"
+        expect(actual['user_agent']).to eq "Android 5.0.2 / Chrome Mobile 51.0.2704.81"
       end
     end
 
@@ -48,7 +48,7 @@ describe SugoiPrettyJSON do
           end
         end
         ap actual
-        expect(actual['user_agent']).to eq "Chrome Mobile 52.0.2743.98"
+        expect(actual['user_agent']).to eq "Android 4.1.2 / Chrome Mobile 52.0.2743.98"
         expect(actual['Parameters']).to be_a Hash
         expect(actual['sid']).not_to be_nil
         expect(actual['IP Address']).to eq '127.0.0.1'
@@ -75,7 +75,7 @@ describe SugoiPrettyJSON do
             end
           end
           ap actual
-          expect(actual['user_agent']).to eq "Chrome Mobile 52.0.2743.98"
+          expect(actual['user_agent']).to eq "Android 4.1.2 / Chrome Mobile 52.0.2743.98"
           expect(actual['params']).to be_a Hash
           expect(actual.keys.size).to eq 12
           actual = SugoiPrettyJSON.parse(get_log_with_params, only: ['user_agent', 'params']) do |pretty_json|
@@ -88,7 +88,7 @@ describe SugoiPrettyJSON do
             end
           end
           ap actual
-          expect(actual['user_agent']).to eq "Chrome Mobile 52.0.2743.98"
+          expect(actual['user_agent']).to eq "Android 4.1.2 / Chrome Mobile 52.0.2743.98"
           expect(actual['params']).to be_a Hash
           expect(actual.keys.size).to eq 2
         end
