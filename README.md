@@ -1,6 +1,9 @@
 # SugoiPrettyJSON
 This gem print pretty log for JSON.
 
+## Requirements
+* ruby >= 2.1.0
+
 ## Installation
 
 Add this line to your application's Gemfile:
