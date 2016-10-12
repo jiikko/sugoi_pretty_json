@@ -35,14 +35,14 @@ describe SugoiPrettyJSON do
 
     context 'when post.log' do
       it 'be success' do
-        actual = SugoiPrettyJSON.parse(post_log, user_agent: 'ua', only: ['Parameters', 'sid']) do |pretty_json|
+        actual = SugoiPrettyJSON.parse(post_log, user_agent: 'ua', only: ['Parameters']) do |pretty_json|
           pretty_json.parse_hash(json_key: 'messages') do |p|
             p.name   = 'Parameters'
             p.source = /Parameters: (.*)/m
           end
         end
         ap actual
-        expect(actual['sid']).not_to be_nil
+        expect(actual['Parameters']).to be_a(Hash)
       end
     end
 
