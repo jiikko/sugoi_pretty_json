@@ -14,6 +14,8 @@ describe SugoiPrettyJSON do
   end
 
   let(:post_log) do
+    # シングルクォートを含んでいてエスケープが手間なのでファイルから読む
+    File.read(File.expand_path('../post.log', __FILE__))
   end
 
   describe '#parse' do
@@ -23,10 +25,24 @@ describe SugoiPrettyJSON do
         expect(actual['user_agent']).to eq nil
       end
     end
+
     context 'when has no params' do
       it 'be success' do
         actual = SugoiPrettyJSON.parse(get_log, user_agent: 'ua')
         expect(actual['user_agent']).to eq "Android 5.0.2 / Chrome Mobile 51.0.2704.81"
+      end
+    end
+
+    context 'when post.log' do
+      it 'be success' do
+        actual = SugoiPrettyJSON.parse(post_log, user_agent: 'ua', only: ['Parameters', 'sid']) do |pretty_json|
+          pretty_json.parse_hash(json_key: 'messages') do |p|
+            p.name   = 'Parameters'
+            p.source = /Parameters: (.*)/m
+          end
+        end
+        ap actual
+        expect(actual['sid']).not_to be_nil
       end
     end
 
